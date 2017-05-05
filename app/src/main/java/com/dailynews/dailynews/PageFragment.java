@@ -31,6 +31,8 @@ public class PageFragment extends Fragment {
     @BindView(R.id.recycler_view)
     public RecyclerView mRecyclerView;
 
+    private LoadNewsAdapter mLoadNewsAdapter;
+
     public static PageFragment newInstance(int page) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
@@ -65,11 +67,40 @@ public class PageFragment extends Fragment {
             }
         });
 
-        mRecyclerView.setAdapter(new LoadNewsAdapter());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mLoadNewsAdapter = new LoadNewsAdapter();
+        mRecyclerView.setAdapter(mLoadNewsAdapter);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayout.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        });
         return view;
+    }
+
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mLoadNewsAdapter.setItemCount(10);
+                mLoadNewsAdapter.notifyDataSetChanged();
+            }
+        }, 3000);
     }
 }
