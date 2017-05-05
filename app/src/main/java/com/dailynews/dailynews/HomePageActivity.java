@@ -94,8 +94,8 @@ public class HomePageActivity extends AppCompatActivity {
 
 
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 3;
-        private String tabTitles[] = new String[] { "Top", "Business", "Education" };
+        final int PAGE_COUNT = 5;
+        private String tabTitles[] = new String[] { "Top", "Business", "Education", "Shopping", "Have a dinner"};
         private Context context;
 
         public SampleFragmentPagerAdapter(FragmentManager fm, Context context) {

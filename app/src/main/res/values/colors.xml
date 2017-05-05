@@ -2,5 +2,11 @@
 <resources>
     <color name="colorPrimary">#FFC107</color>
     <color name="colorPrimaryDark">#FFA000</color>
-    <color name="colorAccent">#448AFF</color>
+    <color name="colorAccent">#FE3F80</color>
+    <color name="blurWhiteColor">#80ffffff</color>
+
+    <color name="blue">#0099CC</color>
+    <color name="purple">#9933CC</color>
+    <color name="green">#669900</color>
+    <color name="orange">#FF8800</color>
 </resources>
