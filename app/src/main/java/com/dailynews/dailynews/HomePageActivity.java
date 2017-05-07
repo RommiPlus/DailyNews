@@ -94,8 +94,7 @@ public class HomePageActivity extends AppCompatActivity {
 
 
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 5;
-        private String tabTitles[] = new String[] { "Top", "Business", "Education", "Shopping", "Have a dinner"};
+        private String tabTitles[] = new String[] { "Top", "Education", "Health", "Movies", "Opinion", "Science", "Sports", "Technology"};
         private Context context;
 
         public SampleFragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -105,12 +104,12 @@ public class HomePageActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return PAGE_COUNT;
+            return tabTitles.length;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return PageFragment.newInstance(position + 1);
+            return PageFragment.newInstance(tabTitles[position]);
         }
 
         @Override
