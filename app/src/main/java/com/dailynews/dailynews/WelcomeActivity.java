@@ -26,8 +26,9 @@ public class WelcomeActivity extends Activity {
         Typeface face = Typeface.createFromAsset(getAssets(), "Satisfy-Regular.ttf");
         mTextView.setTypeface(face);
 
-         CharSequence text = SpannableStringUtils.getBuilder(getString(R.string.daily))
+        CharSequence text = SpannableStringUtils.getBuilder(getString(R.string.daily))
                 .setForegroundColor(getResources().getColor(R.color.red))
+                .append(" ")
                 .append(getString(R.string.news))
                 .setForegroundColor(getResources().getColor(R.color.black))
                 .create();

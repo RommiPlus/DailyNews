@@ -3,24 +3,17 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_item_1"
-            android:icon="@mipmap/ic_launcher_round"
-            android:title="My item 1" />
+            android:icon="@mipmap/account_card_details"
+            android:title="@string/author_information" />
         <item
             android:id="@+id/nav_item_2"
-            android:icon="@mipmap/ic_launcher_round"
-            android:title="My item 2" />
+            android:icon="@mipmap/link_variant"
+            android:title="@string/external_link" />
+
+        <item
+            android:id="@+id/nav_sub_1"
+            android:icon="@mipmap/cursor_pointer"
+            android:title="@string/about_us" />
     </group>
 
-    <item android:title="Sub items">
-        <menu>
-            <item
-                android:id="@+id/nav_sub_1"
-                android:icon="@mipmap/ic_launcher_round"
-                android:title="My sub item 1" />
-            <item
-                android:id="@+id/nav_sub_2"
-                android:icon="@mipmap/ic_launcher_round"
-                android:title="My sub item 2" />
-        </menu>
-    </item>
 </menu>
