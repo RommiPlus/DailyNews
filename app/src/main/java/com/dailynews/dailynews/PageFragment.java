@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -45,6 +46,9 @@ public class PageFragment extends Fragment {
 
     @BindView(R.id.recycler_view)
     public RecyclerView mRecyclerView;
+
+    @BindView(R.id.progressbar)
+    public ProgressBar mProgressBar;
 
     private LoadNewsAdapter mLoadNewsAdapter;
     public static PageFragment newInstance(String title) {
@@ -113,7 +117,18 @@ public class PageFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        reloadDataView();
         requestNews();
+    }
+
+    public void reloadDataView() {
+        if (mLoadNewsAdapter.getDataList() == null) {
+            mRecyclerView.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 
     // Append the next page of data into the adapter
@@ -168,6 +183,8 @@ public class PageFragment extends Fragment {
 
                     mLoadNewsAdapter.setServerListSize(topStories.getNum_results());
                     mLoadNewsAdapter.notifyDataSetChanged();
+
+                    reloadDataView();
                 }
 
                 @Override
@@ -179,14 +196,9 @@ public class PageFragment extends Fragment {
         }
 
         // request Most popular
-//        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-//        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-//        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("https://api.nytimes.com/svc/mostpopular/v2/")
-//                .client(client)
                 .build();
 
         MostPopularService mostPopularService = retrofit.create(MostPopularService.class);
@@ -220,6 +232,8 @@ public class PageFragment extends Fragment {
 
                 mLoadNewsAdapter.setServerListSize(mostPopular.getNum_results());
                 mLoadNewsAdapter.notifyDataSetChanged();
+
+                reloadDataView();
             }
 
             @Override

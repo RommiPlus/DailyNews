@@ -3,4 +3,10 @@
     <dimen name="distance_16dp">16dp</dimen>
     <dimen name="distance_4dp">4dp</dimen>
     <dimen name="distance_8dp">8dp</dimen>
+    <dimen name="distance_32dp">32dp</dimen>
+    <dimen name="distance_48dp">48dp</dimen>
+    <dimen name="distance_60dp">60dp</dimen>
+    <dimen name="distance_200dp">200dp</dimen>
+    <dimen name="distance_180dp">180dp</dimen>
+    <dimen name="distance_2dp">2dp</dimen>
 </resources>

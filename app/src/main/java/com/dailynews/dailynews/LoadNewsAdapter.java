@@ -30,6 +30,11 @@ import static com.dailynews.dailynews.R.id.imageView;
 public class LoadNewsAdapter<T> extends RecyclerView.Adapter {
 
     private Context mContext;
+
+    public List<T> getDataList() {
+        return dataList;
+    }
+
     // the main data list to save loaded data
     protected List<T> dataList;
 
