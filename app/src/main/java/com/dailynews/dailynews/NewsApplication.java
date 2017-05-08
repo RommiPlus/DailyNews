@@ -3,6 +3,7 @@ package com.dailynews.dailynews;
 import android.app.Application;
 import android.net.Uri;
 
+import com.blankj.utilcode.util.Utils;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -40,5 +41,7 @@ public class NewsApplication extends Application {
                 }).build();
 
         Picasso.setSingletonInstance(picasso);
+
+        Utils.init(getApplicationContext());
     }
 }

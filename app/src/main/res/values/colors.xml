@@ -9,4 +9,6 @@
     <color name="purple">#9933CC</color>
     <color name="green">#669900</color>
     <color name="orange">#FF8800</color>
+    <color name="red">#D82121</color>
+    <color name="black">#110C04</color>
 </resources>
