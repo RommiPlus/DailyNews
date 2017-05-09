@@ -1,4 +1,4 @@
-package com.dailynews.dailynews;
+package com.dailynews.dailynews.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -14,6 +14,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.dailynews.dailynews.PageFragment;
+import com.dailynews.dailynews.R;
 
 public class HomePageActivity extends AppCompatActivity {
 

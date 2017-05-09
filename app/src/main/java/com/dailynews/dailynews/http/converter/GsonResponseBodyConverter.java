@@ -1,5 +1,6 @@
-package com.dailynews.dailynews;
+package com.dailynews.dailynews.http.converter;
 
+import com.dailynews.dailynews.http.bean.MostPopular;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;

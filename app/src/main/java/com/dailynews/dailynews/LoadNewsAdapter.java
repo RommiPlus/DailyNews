@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.dailynews.dailynews.widget.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

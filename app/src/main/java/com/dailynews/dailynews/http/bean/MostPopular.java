@@ -1,4 +1,4 @@
-package com.dailynews.dailynews;
+package com.dailynews.dailynews.http.bean;
 
 import com.google.gson.annotations.SerializedName;
 

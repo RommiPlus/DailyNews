@@ -1,4 +1,4 @@
-package com.dailynews.dailynews;
+package com.dailynews.dailynews.http.converter;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;

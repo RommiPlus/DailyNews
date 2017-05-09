@@ -1,4 +1,4 @@
-package com.dailynews.dailynews;
+package com.dailynews.dailynews.widget;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.SpannableStringUtils;
+import com.dailynews.dailynews.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

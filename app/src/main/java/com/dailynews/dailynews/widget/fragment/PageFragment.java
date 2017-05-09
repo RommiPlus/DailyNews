@@ -1,4 +1,4 @@
-package com.dailynews.dailynews;
+package com.dailynews.dailynews.widget.fragment;
 
 
 import android.os.Bundle;
@@ -16,6 +16,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.dailynews.dailynews.EndlessRecyclerViewScrollListener;
+import com.dailynews.dailynews.LoadNewsAdapter;
+import com.dailynews.dailynews.http.bean.MostPopular;
+import com.dailynews.dailynews.R;
+import com.dailynews.dailynews.http.bean.TopStories;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;

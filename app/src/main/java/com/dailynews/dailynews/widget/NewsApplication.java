@@ -1,4 +1,4 @@
-package com.dailynews.dailynews;
+package com.dailynews.dailynews.widget;
 
 import android.app.Application;
 import android.net.Uri;

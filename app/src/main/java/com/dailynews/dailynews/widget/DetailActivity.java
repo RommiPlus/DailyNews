@@ -1,4 +1,4 @@
-package com.dailynews.dailynews;
+package com.dailynews.dailynews.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+
+import com.dailynews.dailynews.R;
+import com.dailynews.dailynews.StatusBarUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
