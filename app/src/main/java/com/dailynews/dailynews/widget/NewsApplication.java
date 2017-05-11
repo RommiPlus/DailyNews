@@ -4,8 +4,12 @@ import android.app.Application;
 import android.net.Uri;
 
 import com.blankj.utilcode.util.Utils;
+import com.dailynews.dailynews.db.DaoMaster;
+import com.dailynews.dailynews.db.DaoSession;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.greendao.database.Database;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +22,13 @@ import okhttp3.Protocol;
  */
 
 public class NewsApplication extends Application {
+
+    private DaoSession mDaossesion;
+
+
+    public DaoSession getmDaossesion() {
+        return mDaossesion;
+    }
 
     @Override
     public void onCreate() {
@@ -43,5 +54,10 @@ public class NewsApplication extends Application {
         Picasso.setSingletonInstance(picasso);
 
         Utils.init(getApplicationContext());
+
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "dailyNews");
+        Database db = helper.getWritableDb();
+        mDaossesion = new DaoMaster(db).newSession();
     }
+
 }

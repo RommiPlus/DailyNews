@@ -15,8 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.dailynews.dailynews.PageFragment;
 import com.dailynews.dailynews.R;
+import com.dailynews.dailynews.widget.fragment.PageFragment;
 
 public class HomePageActivity extends AppCompatActivity {
 
