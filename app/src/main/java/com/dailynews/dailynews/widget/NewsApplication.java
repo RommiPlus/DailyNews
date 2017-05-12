@@ -4,8 +4,8 @@ import android.app.Application;
 import android.net.Uri;
 
 import com.blankj.utilcode.util.Utils;
-import com.dailynews.dailynews.db.DaoMaster;
-import com.dailynews.dailynews.db.DaoSession;
+import com.dailynews.dailynews.data.db.DaoMaster;
+import com.dailynews.dailynews.data.db.DaoSession;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 

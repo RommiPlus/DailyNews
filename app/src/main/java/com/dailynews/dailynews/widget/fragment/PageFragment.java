@@ -1,10 +1,16 @@
 package com.dailynews.dailynews.widget.fragment;
 
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,14 +22,19 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.dailynews.dailynews.EndlessRecyclerViewScrollListener;
 import com.dailynews.dailynews.LoadNewsAdapter;
-import com.dailynews.dailynews.http.bean.MostPopular;
 import com.dailynews.dailynews.R;
+import com.dailynews.dailynews.data.provider.NewsContentProvider;
+import com.dailynews.dailynews.http.bean.MostPopular;
 import com.dailynews.dailynews.http.bean.TopStories;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,10 +52,10 @@ import retrofit2.http.Query;
  * A simple {@link Fragment} subclass.
  */
 // In this case, the fragment displays simple text based on the page
-public class PageFragment extends Fragment {
+public class PageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String ARG_TITLE = "ARG_TITLE";
 
-    private String mTitle;
+    private String mTopic;
 
     @BindView(R.id.swipe_refresh_layout)
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -56,6 +67,10 @@ public class PageFragment extends Fragment {
     public ProgressBar mProgressBar;
 
     private LoadNewsAdapter mLoadNewsAdapter;
+    private static int NEWS_LOADER = 0;
+
+    private static final String TAG = PageFragment.class.getSimpleName();
+
     public static PageFragment newInstance(String title) {
         Bundle args = new Bundle();
         args.putString(ARG_TITLE, title);
@@ -67,7 +82,7 @@ public class PageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTitle = getArguments().getString(ARG_TITLE);
+        mTopic = getArguments().getString(ARG_TITLE);
     }
 
     @Override
@@ -89,18 +104,18 @@ public class PageFragment extends Fragment {
             @Override
             public void onRefresh() {
                 requestNews();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }, 5000);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 5000);
 
             }
         });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mLoadNewsAdapter = new LoadNewsAdapter(getContext());
+        mLoadNewsAdapter = new LoadNewsAdapter(getContext(), mProgressBar, null);
         mRecyclerView.setAdapter(mLoadNewsAdapter);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
@@ -122,19 +137,10 @@ public class PageFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        reloadDataView();
-        requestNews();
+        getLoaderManager().initLoader(NEWS_LOADER, null, this);
     }
 
-    public void reloadDataView() {
-        if (mLoadNewsAdapter.getDataList() == null) {
-            mRecyclerView.setVisibility(View.GONE);
-            mProgressBar.setVisibility(View.VISIBLE);
-        } else {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
-        }
-    }
+
 
     // Append the next page of data into the adapter
     // This method probably sends out a network request and appends new data items to your adapter.
@@ -155,7 +161,7 @@ public class PageFragment extends Fragment {
     }
 
     public void requestNews() {
-        if (mTitle.contains("Top")) {
+        if (mTopic.contains("Top")) {
             // request top stories
             Retrofit retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
@@ -168,28 +174,40 @@ public class PageFragment extends Fragment {
                 @Override
                 public void onResponse(Call<TopStories> call, Response<TopStories> response) {
                     TopStories topStories = response.body();
-                    List<TopStories.ResultsBean> list = topStories.getResults();
-                    mLoadNewsAdapter.setNewsData(list, new LoadNewsAdapter.QueryNewsData<TopStories.ResultsBean>() {
-                        @Override
-                        public LoadNewsAdapter.NewsData onDataSet(TopStories.ResultsBean data) {
-                            String title = data.getTitle();
-                            String detailContenUrl = data.getUrl();
-
-                            String imageUrl = null;
-                            List<TopStories.ResultsBean.MultimediaBean> MuliList = data.getMultimedia();
-                            if (MuliList != null && !MuliList.isEmpty()) {
-                                TopStories.ResultsBean.MultimediaBean bean = data.getMultimedia().get(3);
-                                imageUrl = bean.getUrl();
-                            }
-
-                            return new LoadNewsAdapter.NewsData(title, detailContenUrl, imageUrl);
-                        }
-                    });
-
                     mLoadNewsAdapter.setServerListSize(topStories.getNum_results());
-                    mLoadNewsAdapter.notifyDataSetChanged();
 
-                    reloadDataView();
+                    List<TopStories.ResultsBean> list = topStories.getResults();
+                    List<ContentValues> values = new ArrayList<>();
+                    for (TopStories.ResultsBean bean : list) {
+                        String title = bean.getTitle();
+                        String detailContenUrl = bean.getUrl();
+
+                        String imageUrl = null;
+                        List<TopStories.ResultsBean.MultimediaBean> MuliList = bean.getMultimedia();
+                        if (MuliList != null && !MuliList.isEmpty()) {
+                            TopStories.ResultsBean.MultimediaBean multimediaBean = MuliList.get(3);
+                            imageUrl = multimediaBean.getUrl();
+                        }
+
+                        try {
+                            ContentValues value = new ContentValues();
+                            value.put("TOPIC", mTopic);
+                            value.put("TITLE", title);
+                            value.put("IMAGE_URL", imageUrl);
+                            value.put("COTENT_URL", detailContenUrl);
+                            value.put("UPDATE_DATE", getUpdateDate(bean.getUpdated_date()).getTime());
+                            values.add(value);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            LogUtils.e(TAG, e.getMessage());
+                        }
+                    }
+
+                    Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(mTopic).build();
+                    getActivity().getContentResolver().bulkInsert(
+                            uri,
+                            values.toArray(new ContentValues[values.size()]));
+
                 }
 
                 @Override
@@ -207,38 +225,49 @@ public class PageFragment extends Fragment {
                 .build();
 
         MostPopularService mostPopularService = retrofit.create(MostPopularService.class);
-        Call<MostPopular<Object>> call = mostPopularService.GetMostPopular(mTitle, 1, "8ad7d39a8c7f49469614462a619b36c6");
+        Call<MostPopular<Object>> call = mostPopularService.GetMostPopular(mTopic, 1, "8ad7d39a8c7f49469614462a619b36c6");
         call.enqueue(new Callback<MostPopular<Object>>() {
             @Override
             public void onResponse(Call<MostPopular<Object>> call, Response<MostPopular<Object>> response) {
                 MostPopular mostPopular = response.body();
                 List<MostPopular.ResultsBean> list = mostPopular.getResults();
-                mLoadNewsAdapter.setNewsData(list, new LoadNewsAdapter.QueryNewsData<MostPopular.ResultsBean>() {
-                    @Override
-                    public LoadNewsAdapter.NewsData onDataSet(MostPopular.ResultsBean data) {
-                        String title = data.getTitle();
-                        String detailContenUrl = data.getUrl();
+                List<ContentValues> values = new ArrayList<>();
+                for (MostPopular.ResultsBean bean : list) {
+                    String title = bean.getTitle();
+                    String detailContenUrl = bean.getUrl();
 
-                        String imageUrl = null;
-                        Object meida = data.getMedia();
-                        if (meida != null && meida instanceof ArrayList) {
-                            ArrayList< LinkedTreeMap<String, Object>> beanList = ((ArrayList) meida);
-                           LinkedTreeMap<String, Object> map = beanList.get(0);
-                           ArrayList<LinkedTreeMap<String, Object>> list = (ArrayList<LinkedTreeMap<String, Object>>) map.get("media-metadata");
-                            if (list != null && !list.isEmpty()) {
-                                LinkedTreeMap<String, Object> metaBean = list.get(1);
-                                imageUrl = (String) metaBean.get("url");
-                            }
+                    String imageUrl = null;
+                    Object meida = bean.getMedia();
+                    if (meida != null && meida instanceof ArrayList) {
+                        ArrayList<LinkedTreeMap<String, Object>> beanList = ((ArrayList) meida);
+                        LinkedTreeMap<String, Object> map = beanList.get(0);
+                        ArrayList<LinkedTreeMap<String, Object>> data = (ArrayList<LinkedTreeMap<String, Object>>) map.get("media-metadata");
+                        if (data != null && !data.isEmpty()) {
+                            LinkedTreeMap<String, Object> metaBean = data.get(1);
+                            imageUrl = (String) metaBean.get("url");
                         }
-
-                        return new LoadNewsAdapter.NewsData(title, detailContenUrl, imageUrl);
                     }
-                });
+
+                    try {
+                        ContentValues value = new ContentValues();
+                        value.put("TOPIC", mTopic);
+                        value.put("TITLE", title);
+                        value.put("IMAGE_URL", imageUrl);
+                        value.put("COTENT_URL", detailContenUrl);
+                        value.put("UPDATE_DATE", getPublishDate(bean.getPublished_date()).getTime());
+                        values.add(value);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        LogUtils.e(TAG, e.getMessage());
+                    }
+                }
+
+                Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(mTopic).build();
+                getActivity().getContentResolver().bulkInsert(
+                        uri,
+                        values.toArray(new ContentValues[values.size()]));
 
                 mLoadNewsAdapter.setServerListSize(mostPopular.getNum_results());
-                mLoadNewsAdapter.notifyDataSetChanged();
-
-                reloadDataView();
             }
 
             @Override
@@ -246,6 +275,34 @@ public class PageFragment extends Fragment {
                 Log.v("Throwable", t.getMessage());
             }
         });
+    }
+
+    private Date getPublishDate(String date) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyy-MM-dd");
+        return format.parse(date);
+    }
+
+    private Date getUpdateDate(String date) throws ParseException {
+        date = date.replace("T", " ").substring(0, date.lastIndexOf("-"));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.parse(date);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(mTopic).build();
+        return new CursorLoader(getContext(), uri, null,
+                "TOPIC = ?", new String[]{mTopic}, "UPDATE_DATE DESC");
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mLoadNewsAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mLoadNewsAdapter.swapCursor(null);
     }
 
     public interface TopStoriesService {

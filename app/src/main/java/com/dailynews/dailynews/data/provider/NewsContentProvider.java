@@ -7,8 +7,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.dailynews.dailynews.db.DaoMaster;
-import com.dailynews.dailynews.db.DaoSession;
+import com.dailynews.dailynews.data.db.DaoMaster;
+import com.dailynews.dailynews.data.db.DaoSession;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -20,16 +20,14 @@ public class NewsContentProvider extends ContentProvider {
 
     private DaoSession mDaosession;
 
-    public DaoSession getmDaossesion() {
-        return mDaosession;
-    }
-
     private DaoMaster.DevOpenHelper mHelper;
+
+    public static final Uri NEWS_URI = Uri.parse("content://" + "com.dailynews.dailynews" + "/" + "This is ur");
 
     @Override
     public boolean onCreate() {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(getContext(), "dailyNews");
-        Database db = helper.getWritableDb();
+        mHelper = new DaoMaster.DevOpenHelper(getContext(), "dailyNews");
+        Database db = mHelper.getWritableDb();
         mDaosession = new DaoMaster(db).newSession();
         return true;
     }
@@ -70,6 +68,27 @@ public class NewsContentProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
+    }
+
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        Database db = mHelper.getWritableDb();
+        db.beginTransaction();
+        int returnCount = 0;
+        try {
+            for (ContentValues value : values) {
+                long _id = mHelper.getWritableDatabase().insert(
+                        mDaosession.getDailyNewsDao().getTablename(), null, value);
+                if (_id != -1) {
+                    returnCount++;
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnCount;
     }
 
     @Override

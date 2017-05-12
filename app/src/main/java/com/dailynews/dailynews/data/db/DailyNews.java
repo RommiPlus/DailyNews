@@ -14,22 +14,25 @@ public class DailyNews {
     @Id
     private Long id;
 
+    private String topic;
+
     private String title;
 
     private String imageUrl;
 
     private String cotentUrl;
 
-    private Date date;
+    private Date updateDate;
 
-    @Generated(hash = 182913529)
-    public DailyNews(Long id, String title, String imageUrl, String cotentUrl,
-                     Date date) {
+    @Generated(hash = 888416427)
+    public DailyNews(Long id, String topic, String title, String imageUrl,
+            String cotentUrl, Date updateDate) {
         this.id = id;
+        this.topic = topic;
         this.title = title;
         this.imageUrl = imageUrl;
         this.cotentUrl = cotentUrl;
-        this.date = date;
+        this.updateDate = updateDate;
     }
 
     @Generated(hash = 2073608363)
@@ -68,12 +71,20 @@ public class DailyNews {
         this.cotentUrl = cotentUrl;
     }
 
-    public Date getDate() {
-        return this.date;
+    public String getTopic() {
+        return this.topic;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public Date getUpdateDate() {
+        return this.updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
 }

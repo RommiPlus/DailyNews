@@ -18,11 +18,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name=".data.provider.NewsContentProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"
+            android:syncable="true" />
+
         <activity android:name=".widget.HomePageActivity">
 
         </activity>
-        <activity android:name=".DetailActivity"></activity>
-        <activity android:name=".WelcomeActivity">
+        <activity android:name=".widget.DetailActivity"></activity>
+        <activity android:name=".widget.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
