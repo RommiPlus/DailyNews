@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Used to load images from the gallery content provider. -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Permissions required by the sync adapter -->
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
     <application
         android:name=".widget.NewsApplication"
@@ -25,9 +29,32 @@
             android:exported="false"
             android:syncable="true" />
 
-        <activity android:name=".widget.HomePageActivity">
+        <activity android:name=".widget.HomePageActivity"/>
 
-        </activity>
+        <!-- SyncAdapter's dummy authentication service -->
+        <service android:name=".sync.DailyNewsAuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <!-- The SyncAdapter service -->
+        <service
+            android:name=".sync.DailyNewsSyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+
         <activity android:name=".widget.DetailActivity"></activity>
         <activity android:name=".widget.WelcomeActivity">
             <intent-filter>

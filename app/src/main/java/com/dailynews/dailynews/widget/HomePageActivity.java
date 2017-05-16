@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.dailynews.dailynews.R;
+import com.dailynews.dailynews.sync.DailyNewsSyncAdapter;
 import com.dailynews.dailynews.widget.fragment.PageFragment;
 
 public class HomePageActivity extends AppCompatActivity {
@@ -23,6 +24,8 @@ public class HomePageActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle drawerToggle;
+
+    public static final String sTabTitles[] = new String[] { "Top", "Education", "Health", "Movies", "Opinion", "Science", "Sports", "Technology"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,8 @@ public class HomePageActivity extends AppCompatActivity {
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        DailyNewsSyncAdapter.initializeSyncAdapter(this, DailyNewsSyncAdapter.syncBundle(sTabTitles));
     }
 
     // `onPostCreate` called when activity start-up is complete after `onStart()`
@@ -97,7 +102,7 @@ public class HomePageActivity extends AppCompatActivity {
 
 
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-        private String tabTitles[] = new String[] { "Top", "Education", "Health", "Movies", "Opinion", "Science", "Sports", "Technology"};
+
         private Context context;
 
         public SampleFragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -107,18 +112,18 @@ public class HomePageActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return tabTitles.length;
+            return sTabTitles.length;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return PageFragment.newInstance(position, tabTitles[position]);
+            return PageFragment.newInstance(position, sTabTitles[position]);
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             // Generate title based on item position
-            return tabTitles[position];
+            return sTabTitles[position];
         }
     }
 }
