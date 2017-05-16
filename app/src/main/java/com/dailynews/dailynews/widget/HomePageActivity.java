@@ -112,7 +112,7 @@ public class HomePageActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return PageFragment.newInstance(tabTitles[position]);
+            return PageFragment.newInstance(position, tabTitles[position]);
         }
 
         @Override

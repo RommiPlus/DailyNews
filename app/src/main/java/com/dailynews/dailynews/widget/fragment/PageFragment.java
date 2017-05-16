@@ -54,8 +54,10 @@ import retrofit2.http.Query;
 // In this case, the fragment displays simple text based on the page
 public class PageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String ARG_TITLE = "ARG_TITLE";
+    public static final String ARG_POSITION = "ARG_POSITION";
 
     private String mTopic;
+    private int mPosition;
 
     @BindView(R.id.swipe_refresh_layout)
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -71,9 +73,10 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private static final String TAG = PageFragment.class.getSimpleName();
 
-    public static PageFragment newInstance(String title) {
+    public static PageFragment newInstance(int position, String title) {
         Bundle args = new Bundle();
         args.putString(ARG_TITLE, title);
+        args.putInt(ARG_POSITION, position);
         PageFragment fragment = new PageFragment();
         fragment.setArguments(args);
         return fragment;
@@ -83,6 +86,7 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTopic = getArguments().getString(ARG_TITLE);
+        mPosition = getArguments().getInt(ARG_POSITION);
     }
 
     @Override
@@ -90,14 +94,6 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_page, container, false);
         ButterKnife.bind(this, view);
-
-        // request data from server according to title
-
-        // Load data to display
-
-
-        // When pull to refresh, update all data
-
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.blue, R.color.green, R.color.purple);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -137,7 +133,8 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(NEWS_LOADER, null, this);
+        requestNews();
+        getActivity().getSupportLoaderManager().initLoader(mPosition, null, this);
     }
 
 
@@ -204,6 +201,8 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
                     }
 
                     Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(mTopic).build();
+
+                    getActivity().getContentResolver().delete(uri, "TOPIC = ?", new String[]{mTopic});
                     getActivity().getContentResolver().bulkInsert(
                             uri,
                             values.toArray(new ContentValues[values.size()]));
@@ -263,6 +262,7 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
                 }
 
                 Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(mTopic).build();
+                getActivity().getContentResolver().delete(uri, "TOPIC = ?", new String[]{mTopic});
                 getActivity().getContentResolver().bulkInsert(
                         uri,
                         values.toArray(new ContentValues[values.size()]));
@@ -290,13 +290,15 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.i(TAG, "id: " + id);
         Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(mTopic).build();
-        return new CursorLoader(getContext(), uri, null,
+        return new CursorLoader(getActivity(), uri, null,
                 "TOPIC = ?", new String[]{mTopic}, "UPDATE_DATE DESC");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.i(TAG, "mTopic: " + mTopic);
         mLoadNewsAdapter.swapCursor(data);
     }
 

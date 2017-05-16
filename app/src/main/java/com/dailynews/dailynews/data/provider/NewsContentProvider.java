@@ -35,7 +35,7 @@ public class NewsContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return mHelper.getReadableDatabase().query(
+        Cursor retCursor = mHelper.getReadableDatabase().query(
                 mDaosession.getDailyNewsDao().getTablename(),
                 projection,
                 selection,
@@ -43,6 +43,8 @@ public class NewsContentProvider extends ContentProvider {
                 null,
                 null,
                 sortOrder);
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
     }
 
     @Nullable
