@@ -15,6 +15,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/reach_last_item"
-        android:visibility="gone"/>
+        android:text="@string/reach_last_item" />
 </LinearLayout>

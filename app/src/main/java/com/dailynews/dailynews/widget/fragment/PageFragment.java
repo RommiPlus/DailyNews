@@ -69,7 +69,6 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
     public ProgressBar mProgressBar;
 
     private LoadNewsAdapter mLoadNewsAdapter;
-    private static int NEWS_LOADER = 0;
 
     private static final String TAG = PageFragment.class.getSimpleName();
 

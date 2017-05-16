@@ -1,6 +1,5 @@
 package com.dailynews.dailynews;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
@@ -57,9 +56,8 @@ public class LoadNewsAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_LOADING) {
             // display the last row
-            Activity activity = (Activity) parent.getContext();
-            View view = activity.getLayoutInflater().inflate(
-                    R.layout.progress, parent, false);
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view = inflater.inflate(R.layout.progress, parent, false);
 
             return new LastItemViewHolder(view);
         }
