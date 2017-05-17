@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/view"
+    android:orientation="horizontal"
     android:padding="@dimen/distance_16dp">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="119dp"
         android:layout_height="87dp"
+        android:layout_gravity="center_vertical"
         android:scaleType="centerCrop"
-        app:srcCompat="@android:drawable/ic_menu_camera"/>
+        app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="16dp"
         android:text="TextView"
         android:textColor="@color/black"
-        android:textSize="18sp"/>
+        android:textSize="18sp" />
 
 </LinearLayout>

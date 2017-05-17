@@ -9,4 +9,8 @@
     <dimen name="distance_200dp">200dp</dimen>
     <dimen name="distance_180dp">180dp</dimen>
     <dimen name="distance_2dp">2dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="text_size_18sp">18sp</dimen>
+    <dimen name="text_size_22sp">22sp</dimen>
+    <dimen name="distance_1dp">1dp</dimen>
 </resources>

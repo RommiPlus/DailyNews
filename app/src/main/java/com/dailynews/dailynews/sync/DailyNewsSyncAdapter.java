@@ -46,12 +46,7 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int SYNC_INTERVAL = 60 * 60 * 3;  // 3 hours
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
     public static final String ACTION_DATA_UPDATED =
-            "com.example.android.sunshine.app.ACTION_DATA_UPDATED";
-
-    private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
-    private static final int WEATHER_NOTIFICATION_ID = 3004;
-
-    private static final String SYNC_DATA = "SYNC_DATA";
+            "com.daily.news.android.app.ACTION_DATA_UPDATED";
 
     public DailyNewsSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -211,6 +206,7 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
                             uri,
                             values.toArray(new ContentValues[values.size()]));
 
+                    updateWidgets();
                 }
 
                 @Override
@@ -279,6 +275,15 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
         });
     }
 
+
+    private void updateWidgets() {
+        Context context = getContext();
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
+    }
+
     private Date getPublishDate(String date) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("yyy-MM-dd");
         return format.parse(date);
@@ -298,14 +303,6 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
     public interface MostPopularService {
         @GET("mostviewed/{section}/{time-period}.json")
         Call<MostPopular<Object>> GetMostPopular(@Path("section") String section, @Path("time-period") int timeSection, @Query("api-key") String apiKey);
-    }
-
-    private void updateWidgets() {
-        Context context = getContext();
-        // Setting the package ensures that only components in our app will receive the broadcast
-        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
-                .setPackage(context.getPackageName());
-        context.sendBroadcast(dataUpdatedIntent);
     }
 
 }

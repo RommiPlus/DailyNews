@@ -16,4 +16,6 @@
     <!-- SyncAdapter related -->
     <string name="sync_account_type">dailynews.example.com</string>
     <string name="content_authority">com.dailynews.dailynews</string>
+    <string name="no_news_info">No daily news info</string>
+    <string name="loading_info">Data is loading</string>
 </resources>
