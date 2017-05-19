@@ -16,6 +16,7 @@
             android:layout_width="119dp"
             android:layout_height="87dp"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/loading_image"
             android:layout_gravity="center"
             android:src="@mipmap/loading_image" />
         <ProgressBar

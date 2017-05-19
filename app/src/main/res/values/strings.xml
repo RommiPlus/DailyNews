@@ -18,4 +18,6 @@
     <string name="content_authority">com.dailynews.dailynews</string>
     <string name="no_news_info">No daily news info</string>
     <string name="loading_info">Data is loading</string>
+    <string name="loading_image">This is a image</string>
+    <string name="app_icon">This is a app icon</string>
 </resources>

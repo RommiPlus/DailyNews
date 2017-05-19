@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="com.dailynews.dailynews.WelcomeActivity">
+    tools:context=".widget.WelcomeActivity">
 
     <ImageView
         android:layout_width="97dp"

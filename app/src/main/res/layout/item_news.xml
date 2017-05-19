@@ -12,6 +12,7 @@
         android:layout_width="119dp"
         android:layout_height="87dp"
         android:layout_gravity="center_vertical"
+        android:contentDescription="@string/loading_image"
         android:scaleType="centerCrop"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
