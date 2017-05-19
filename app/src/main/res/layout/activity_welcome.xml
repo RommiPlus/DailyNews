@@ -14,6 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="128dp"
         android:layout_marginLeft="144dp"
+        android:layout_marginStart="144dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
@@ -25,5 +26,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="32dp"
         android:layout_marginLeft="138dp"
+        android:layout_marginStart="138dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 </android.support.constraint.ConstraintLayout>
