@@ -21,6 +21,7 @@ import com.dailynews.dailynews.data.provider.NewsContentProvider;
 import com.dailynews.dailynews.http.bean.MostPopular;
 import com.dailynews.dailynews.http.bean.TopStories;
 import com.dailynews.dailynews.widget.HomePageActivity;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.text.ParseException;
@@ -194,6 +195,7 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
                             value.put("UPDATE_DATE", getUpdateDate(bean.getUpdated_date()).getTime());
                             values.add(value);
                         } catch (ParseException e) {
+                            FirebaseCrash.log(TAG + ": Top news phrase error "+ e.getMessage());
                             e.printStackTrace();
                             LogUtils.e(TAG, e.getMessage());
                         }
@@ -211,7 +213,7 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 @Override
                 public void onFailure(Call<TopStories> call, Throwable t) {
-                    Log.v("Throwable", t.getMessage());
+                    LogUtils.w("Throwable", t.getMessage());
                 }
             });
             return;
@@ -256,6 +258,7 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
                         value.put("UPDATE_DATE", getPublishDate(bean.getPublished_date()).getTime());
                         values.add(value);
                     } catch (ParseException e) {
+                        FirebaseCrash.log(TAG + ": most popular news phrase error "+ e.getMessage());
                         e.printStackTrace();
                         LogUtils.e(TAG, e.getMessage());
                     }
@@ -270,7 +273,7 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             @Override
             public void onFailure(Call<MostPopular<Object>> call, Throwable t) {
-                Log.v("Throwable", t.getMessage());
+                LogUtils.w("Throwable", t.getMessage());
             }
         });
     }

@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 
 import com.dailynews.dailynews.data.db.DaoMaster;
 import com.dailynews.dailynews.data.db.DaoSession;
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -23,6 +24,8 @@ public class NewsContentProvider extends ContentProvider {
     private DaoMaster.DevOpenHelper mHelper;
 
     public static final Uri NEWS_URI = Uri.parse("content://" + "com.dailynews.dailynews" + "/" + "This is ur");
+
+    private static final String TAG = NewsContentProvider.class.getSimpleName();
 
     @Override
     public boolean onCreate() {
@@ -65,8 +68,10 @@ public class NewsContentProvider extends ContentProvider {
         Uri returnUri;
         if (_id > 0)
             returnUri = Uri.parse("" + _id);
-        else
+        else {
+            FirebaseCrash.log(TAG + ": Failed to insert row into "+ uri);
             throw new android.database.SQLException("Failed to insert row into " + uri);
+        }
 
         getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
