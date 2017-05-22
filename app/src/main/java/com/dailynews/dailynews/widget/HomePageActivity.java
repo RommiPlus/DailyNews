@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import com.dailynews.dailynews.R;
 import com.dailynews.dailynews.sync.DailyNewsSyncAdapter;
 import com.dailynews.dailynews.widget.fragment.PageFragment;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class HomePageActivity extends AppCompatActivity {
 
@@ -27,10 +28,16 @@ public class HomePageActivity extends AppCompatActivity {
 
     public static final String sTabTitles[] = new String[] { "Top", "Education", "Health", "Movies", "Opinion", "Science", "Sports", "Technology"};
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
+    private static final String TAG = HomePageActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,9 +63,29 @@ public class HomePageActivity extends AppCompatActivity {
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Bundle bundle = new Bundle();
+                bundle.putString("Click Event", "Tab: " + tab.getText() + " is selected");
+                mFirebaseAnalytics.logEvent(TAG, bundle);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         DailyNewsSyncAdapter.initializeSyncAdapter(this, DailyNewsSyncAdapter.syncBundle(sTabTitles));
+
     }
+
 
     // `onPostCreate` called when activity start-up is complete after `onStart()`
     // NOTE 1: Make sure to override the method with only a single `Bundle` argument
@@ -93,6 +120,10 @@ public class HomePageActivity extends AppCompatActivity {
         // The action bar home/up action should open or close the drawer.
         switch (item.getItemId()) {
             case android.R.id.home:
+                Bundle bundle = new Bundle();
+                bundle.putString("Click Event", "Home button is clicked");
+                mFirebaseAnalytics.logEvent(TAG, bundle);
+
                 mDrawer.openDrawer(GravityCompat.START);
                 return true;
         }

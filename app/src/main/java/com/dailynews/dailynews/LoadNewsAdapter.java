@@ -2,6 +2,7 @@ package com.dailynews.dailynews;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dailynews.dailynews.widget.DetailActivity;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -28,6 +30,8 @@ public class LoadNewsAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private Cursor mCursor;
     private ProgressBar mEmptyView;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private static final String TAG = LoadNewsAdapter.class.getSimpleName();
 
     public LoadNewsAdapter(Context context, ProgressBar progressBar, Cursor cursor) {
         mContext = context;
@@ -37,6 +41,10 @@ public class LoadNewsAdapter extends RecyclerView.Adapter {
 
     public void setServerListSize(int serverListSize) {
         this.serverListSize = serverListSize;
+    }
+
+    public void setFirebaseAnalytics(FirebaseAnalytics analytics) {
+        this.mFirebaseAnalytics = analytics;
     }
 
     // the serverListSize is the total number of items on the server side,
@@ -75,11 +83,15 @@ public class LoadNewsAdapter extends RecyclerView.Adapter {
             String imageUrl = mCursor.getString(mCursor.getColumnIndex("IMAGE_URL"));
             final String contentUrl = mCursor.getString(mCursor.getColumnIndex("COTENT_URL"));
 
-            NewsViewHolder newsViewHolder = (NewsViewHolder) holder;
+            final NewsViewHolder newsViewHolder = (NewsViewHolder) holder;
             newsViewHolder.mTitle.setText(title);
             newsViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Click Event", "News: " + newsViewHolder.mTitle + " is clicked");
+                    mFirebaseAnalytics.logEvent(TAG, bundle);
+
                     DetailActivity.actionStart(mContext, contentUrl);
                 }
             });

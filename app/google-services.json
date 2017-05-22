@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "75058494976",
+    "firebase_url": "https://testfinalproject-155407.firebaseio.com",
+    "project_id": "testfinalproject-155407",
+    "storage_bucket": "testfinalproject-155407.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75058494976:android:bdb343fb6af439ab",
+        "android_client_info": {
+          "package_name": "com.dailynews.dailynews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "75058494976-tggmq8rp2l4sbu78fnr5b8jmndqic2p9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs62oddc68KycQwNDE0V3l7H7p9j9lmis"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

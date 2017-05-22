@@ -26,6 +26,7 @@ import com.dailynews.dailynews.LoadNewsAdapter;
 import com.dailynews.dailynews.R;
 import com.dailynews.dailynews.data.provider.NewsContentProvider;
 import com.dailynews.dailynews.sync.DailyNewsSyncAdapter;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +54,7 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
     private LoadNewsAdapter mLoadNewsAdapter;
 
     private static final String TAG = PageFragment.class.getSimpleName();
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public static PageFragment newInstance(int position, String title) {
         Bundle args = new Bundle();
@@ -68,6 +70,8 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
         mTopic = getArguments().getString(ARG_TITLE);
         mPosition = getArguments().getInt(ARG_POSITION);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
     }
 
     @Override
@@ -94,6 +98,8 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mLoadNewsAdapter = new LoadNewsAdapter(getContext(), mProgressBar, null);
+        mLoadNewsAdapter.setFirebaseAnalytics(mFirebaseAnalytics);
+
         mRecyclerView.setAdapter(mLoadNewsAdapter);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao' // apply plugin
+apply plugin: 'com.google.gms.google-services'
 
 android {
     signingConfigs {
@@ -14,7 +15,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.dailynews.dailynews"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -26,6 +27,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.product
         }
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
     }
 }
 
@@ -55,4 +60,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'org.greenrobot:greendao:3.2.2'
     // add library
+    compile 'com.google.firebase:firebase-analytics:10.2.6'
 }
