@@ -16,11 +16,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.NetworkUtils;
 import com.dailynews.dailynews.R;
 import com.dailynews.dailynews.data.provider.NewsContentProvider;
 import com.dailynews.dailynews.http.bean.MostPopular;
 import com.dailynews.dailynews.http.bean.TopStories;
 import com.dailynews.dailynews.widget.HomePageActivity;
+import com.dailynews.dailynews.widget.NewsApplication;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -150,6 +152,20 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.d(LOG_TAG, "onPerformSync Called.");
 
+        if (!NetworkUtils.isConnected()) {
+            ((NewsApplication) getContext()
+                    .getApplicationContext())
+                    .getSpUtils().put(
+                    NewsApplication.NETWORK_STATUS,
+                    NewsApplication.NETWORK_NOT_CONNECTED);
+            return;
+        }
+
+        ((NewsApplication) getContext()
+                .getApplicationContext())
+                .getSpUtils().put(
+                NewsApplication.NETWORK_STATUS,
+                NewsApplication.NETWORK_CONNECTED);
         for (int i = 0; i < HomePageActivity.sTabTitles.length; i++) {
             String topic = extras.getString(HomePageActivity.sTabTitles[i]);
             if (topic != null) {
@@ -194,26 +210,38 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
                             value.put("COTENT_URL", detailContenUrl);
                             value.put("UPDATE_DATE", getUpdateDate(bean.getUpdated_date()).getTime());
                             values.add(value);
+
+                            Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(syncTopic).build();
+
+                            getContext().getContentResolver().delete(uri, "TOPIC = ?", new String[]{syncTopic});
+                            getContext().getContentResolver().bulkInsert(
+                                    uri,
+                                    values.toArray(new ContentValues[values.size()]));
+
+                            updateWidgets();
                         } catch (ParseException e) {
-                            FirebaseCrash.log(TAG + ": Top news phrase error "+ e.getMessage());
                             e.printStackTrace();
+                            FirebaseCrash.log(TAG + ": Top news phrase error " + e.getMessage());
                             LogUtils.e(TAG, e.getMessage());
+
+                            ((NewsApplication) getContext()
+                                    .getApplicationContext())
+                                    .getSpUtils().put(
+                                    NewsApplication.NETWORK_STATUS,
+                                    NewsApplication.DATA_PHRASE_ERROR);
                         }
                     }
-
-                    Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(syncTopic).build();
-
-                    getContext().getContentResolver().delete(uri, "TOPIC = ?", new String[]{syncTopic});
-                    getContext().getContentResolver().bulkInsert(
-                            uri,
-                            values.toArray(new ContentValues[values.size()]));
-
-                    updateWidgets();
                 }
 
                 @Override
                 public void onFailure(Call<TopStories> call, Throwable t) {
                     LogUtils.w("Throwable", t.getMessage());
+
+                    ((NewsApplication) getContext()
+                            .getApplicationContext())
+                            .getSpUtils().put(
+                            NewsApplication.NETWORK_STATUS,
+                            NewsApplication.DATA_CONVERTER_ERROR);
                 }
             });
             return;
@@ -257,23 +285,34 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
                         value.put("COTENT_URL", detailContenUrl);
                         value.put("UPDATE_DATE", getPublishDate(bean.getPublished_date()).getTime());
                         values.add(value);
+
+                        Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(syncTopic).build();
+                        getContext().getContentResolver().delete(uri, "TOPIC = ?", new String[]{syncTopic});
+                        getContext().getContentResolver().bulkInsert(
+                                uri,
+                                values.toArray(new ContentValues[values.size()]));
                     } catch (ParseException e) {
-                        FirebaseCrash.log(TAG + ": most popular news phrase error "+ e.getMessage());
+                        FirebaseCrash.log(TAG + ": most popular news phrase error " + e.getMessage());
                         e.printStackTrace();
-                        LogUtils.e(TAG, e.getMessage());
+
+                        ((NewsApplication) getContext()
+                                .getApplicationContext())
+                                .getSpUtils().put(
+                                NewsApplication.NETWORK_STATUS,
+                                NewsApplication.DATA_PHRASE_ERROR);
                     }
                 }
-
-                Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(syncTopic).build();
-                getContext().getContentResolver().delete(uri, "TOPIC = ?", new String[]{syncTopic});
-                getContext().getContentResolver().bulkInsert(
-                        uri,
-                        values.toArray(new ContentValues[values.size()]));
             }
 
             @Override
             public void onFailure(Call<MostPopular<Object>> call, Throwable t) {
                 LogUtils.w("Throwable", t.getMessage());
+
+                ((NewsApplication) getContext()
+                        .getApplicationContext())
+                        .getSpUtils().put(
+                        NewsApplication.NETWORK_STATUS,
+                        NewsApplication.DATA_CONVERTER_ERROR);
             }
         });
     }

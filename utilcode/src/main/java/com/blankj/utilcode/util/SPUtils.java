@@ -32,6 +32,14 @@ public final class SPUtils {
         editor.apply();
     }
 
+    public void setListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        sp.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unsetListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        sp.unregisterOnSharedPreferenceChangeListener(listener);
+    }
+
     /**
      * SP中写入String类型value
      *

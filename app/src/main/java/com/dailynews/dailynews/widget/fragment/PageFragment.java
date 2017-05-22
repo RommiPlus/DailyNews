@@ -1,6 +1,7 @@
 package com.dailynews.dailynews.widget.fragment;
 
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,11 +22,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.blankj.utilcode.util.NetworkUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.dailynews.dailynews.EndlessRecyclerViewScrollListener;
 import com.dailynews.dailynews.LoadNewsAdapter;
 import com.dailynews.dailynews.R;
 import com.dailynews.dailynews.data.provider.NewsContentProvider;
 import com.dailynews.dailynews.sync.DailyNewsSyncAdapter;
+import com.dailynews.dailynews.widget.NewsApplication;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import butterknife.BindView;
@@ -35,7 +40,8 @@ import butterknife.ButterKnife;
  * A simple {@link Fragment} subclass.
  */
 // In this case, the fragment displays simple text based on the page
-public class PageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PageFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String ARG_TITLE = "ARG_TITLE";
     public static final String ARG_POSITION = "ARG_POSITION";
 
@@ -72,6 +78,24 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
         mPosition = getArguments().getInt(ARG_POSITION);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getSp().setListener(this);
+
+        if (!NetworkUtils.isConnected()) {
+            getSp().put(NewsApplication.NETWORK_STATUS,NewsApplication.NETWORK_NOT_CONNECTED);
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getSp().unsetListener(this);
     }
 
     @Override
@@ -129,7 +153,6 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
 
-
     // Append the next page of data into the adapter
     // This method probably sends out a network request and appends new data items to your adapter.
     public void loadNextDataFromApi(int offset) {
@@ -169,4 +192,16 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(NewsApplication.NETWORK_STATUS)) {
+            String info = getSp().getString(key);
+            ToastUtils.showShortToast(info);
+        }
+    }
+
+    public SPUtils getSp() {
+        return ((NewsApplication) getContext()
+                .getApplicationContext()).getSpUtils();
+    }
 }

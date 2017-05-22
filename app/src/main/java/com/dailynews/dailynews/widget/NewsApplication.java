@@ -3,6 +3,7 @@ package com.dailynews.dailynews.widget;
 import android.app.Application;
 import android.net.Uri;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.dailynews.dailynews.data.db.DaoMaster;
 import com.dailynews.dailynews.data.db.DaoSession;
@@ -24,11 +25,17 @@ import okhttp3.Protocol;
 public class NewsApplication extends Application {
 
     private DaoSession mDaossesion;
-
-
     public DaoSession getmDaossesion() {
         return mDaossesion;
     }
+    private SPUtils mSpUtils;
+    public static String NETWORK_STATUS = "network_status";
+
+
+    public static final String DATA_PHRASE_ERROR = "DATA PHRASE ERROR";
+    public static final String NETWORK_NOT_CONNECTED = "NETWORK NOT CONNECTED";
+    public static final String DATA_CONVERTER_ERROR = "DATA CONVERTER ERROR";
+    public static final String NETWORK_CONNECTED = "NETWORK CONNECTED";
 
     @Override
     public void onCreate() {
@@ -58,6 +65,12 @@ public class NewsApplication extends Application {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "dailyNews");
         Database db = helper.getWritableDb();
         mDaossesion = new DaoMaster(db).newSession();
+
+        mSpUtils = new SPUtils("network_status");
+    }
+
+    public SPUtils getSpUtils() {
+        return mSpUtils;
     }
 
 }
