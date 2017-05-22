@@ -29,7 +29,8 @@
             android:exported="false"
             android:syncable="true" />
 
-        <activity android:name=".widget.HomePageActivity"/>
+        <activity android:name=".widget.HomePageActivity"
+            android:theme="@style/HomeTheme"/>
 
         <receiver
             android:name=".widget.appwidget.DailyNewsWidgetProvider">
@@ -72,7 +73,8 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-        <activity android:name=".widget.DetailActivity"/>
+        <activity android:name=".widget.DetailActivity"
+            android:theme="@style/DetailTheme"/>
         <activity android:name=".widget.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

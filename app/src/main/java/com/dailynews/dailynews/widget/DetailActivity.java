@@ -1,10 +1,11 @@
 package com.dailynews.dailynews.widget;
 
-import android.app.ActivityOptions;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -34,13 +35,9 @@ public class DetailActivity extends AppCompatActivity {
     public static void actionStart(Context context, String url) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra("URL", url);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            context.startActivity(intent,
-                    ActivityOptions.makeSceneTransitionAnimation((HomePageActivity)context).toBundle());
-            return;
-        }
 
-        context.startActivity(intent);
+        ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context);
+        ActivityCompat.startActivity(context, intent, compat.toBundle());
     }
 
     @Override

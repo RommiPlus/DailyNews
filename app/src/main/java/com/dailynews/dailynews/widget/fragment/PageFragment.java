@@ -121,6 +121,8 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        getActivity().supportPostponeEnterTransition();
+
         DailyNewsSyncAdapter.syncImmediately(
                 getActivity(), DailyNewsSyncAdapter.syncBundle(new String[]{mTopic}));
         getActivity().getSupportLoaderManager().initLoader(mPosition, null, this);
@@ -158,6 +160,7 @@ public class PageFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.i(TAG, "mTopic: " + mTopic);
         mLoadNewsAdapter.swapCursor(data);
+        getActivity().supportStartPostponedEnterTransition();
     }
 
     @Override
