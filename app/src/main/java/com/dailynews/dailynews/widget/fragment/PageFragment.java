@@ -142,11 +142,10 @@ public class PageFragment extends Fragment implements
         return view;
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        getActivity().supportPostponeEnterTransition();
 
         DailyNewsSyncAdapter.syncImmediately(
                 getActivity(), DailyNewsSyncAdapter.syncBundle(new String[]{mTopic}));
@@ -186,7 +185,6 @@ public class PageFragment extends Fragment implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.i(TAG, "mTopic: " + mTopic);
         mLoadNewsAdapter.swapCursor(data);
-        getActivity().supportStartPostponedEnterTransition();
     }
 
     @Override
