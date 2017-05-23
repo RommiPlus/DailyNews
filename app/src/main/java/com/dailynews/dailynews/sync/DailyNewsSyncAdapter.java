@@ -18,10 +18,10 @@ import android.util.Log;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.dailynews.dailynews.R;
+import com.dailynews.dailynews.data.db.DailyNewsDao;
 import com.dailynews.dailynews.data.provider.NewsContentProvider;
 import com.dailynews.dailynews.http.bean.MostPopular;
 import com.dailynews.dailynews.http.bean.TopStories;
-import com.dailynews.dailynews.widget.HomePageActivity;
 import com.dailynews.dailynews.widget.NewsApplication;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.internal.LinkedTreeMap;
@@ -42,6 +42,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 import static android.content.ContentValues.TAG;
+import static com.dailynews.dailynews.widget.HomePageActivity.sTabTitles;
 
 public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
     public final String LOG_TAG = DailyNewsSyncAdapter.class.getSimpleName();
@@ -143,7 +144,7 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
     public static Bundle syncBundle(String[] array) {
         Bundle bundle = new Bundle();
         for (int i = 0; i < array.length; i++) {
-            bundle.putString(HomePageActivity.sTabTitles[i], array[i]);
+            bundle.putString(sTabTitles[i], array[i]);
         }
         return bundle;
     }
@@ -166,8 +167,8 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
                 .getSpUtils().put(
                 NewsApplication.NETWORK_STATUS,
                 NewsApplication.NETWORK_CONNECTED);
-        for (int i = 0; i < HomePageActivity.sTabTitles.length; i++) {
-            String topic = extras.getString(HomePageActivity.sTabTitles[i]);
+        for (int i = 0; i < sTabTitles.length; i++) {
+            String topic = extras.getString(sTabTitles[i]);
             if (topic != null) {
                 requestNews(topic);
             }
@@ -175,7 +176,7 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public void requestNews(final String syncTopic) {
-        if (syncTopic.contains("Top")) {
+        if (syncTopic.contains(sTabTitles[0])) {
             // request top stories
             Retrofit retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
@@ -204,16 +205,20 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
 
                         try {
                             ContentValues value = new ContentValues();
-                            value.put("TOPIC", syncTopic);
-                            value.put("TITLE", title);
-                            value.put("IMAGE_URL", imageUrl);
-                            value.put("COTENT_URL", detailContenUrl);
-                            value.put("UPDATE_DATE", getUpdateDate(bean.getUpdated_date()).getTime());
+                            value.put(DailyNewsDao.Properties.Topic.columnName, syncTopic);
+                            value.put(DailyNewsDao.Properties.Title.columnName, title);
+                            value.put(DailyNewsDao.Properties.ImageUrl.columnName, imageUrl);
+                            value.put(DailyNewsDao.Properties.CotentUrl.columnName, detailContenUrl);
+                            value.put(DailyNewsDao.Properties.UpdateDate.columnName,
+                                    getUpdateDate(bean.getUpdated_date()).getTime());
                             values.add(value);
 
                             Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(syncTopic).build();
 
-                            getContext().getContentResolver().delete(uri, "TOPIC = ?", new String[]{syncTopic});
+                            getContext().getContentResolver().delete(
+                                    uri,
+                                    DailyNewsDao.Properties.Topic.columnName + " = ?",
+                                    new String[]{syncTopic});
                             getContext().getContentResolver().bulkInsert(
                                     uri,
                                     values.toArray(new ContentValues[values.size()]));
@@ -279,15 +284,21 @@ public class DailyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     try {
                         ContentValues value = new ContentValues();
-                        value.put("TOPIC", syncTopic);
-                        value.put("TITLE", title);
-                        value.put("IMAGE_URL", imageUrl);
-                        value.put("COTENT_URL", detailContenUrl);
-                        value.put("UPDATE_DATE", getPublishDate(bean.getPublished_date()).getTime());
+                        value.put(DailyNewsDao.Properties.Topic.columnName, syncTopic);
+                        value.put(DailyNewsDao.Properties.Title.columnName, title);
+                        value.put(DailyNewsDao.Properties.ImageUrl.columnName, imageUrl);
+                        value.put(DailyNewsDao.Properties.CotentUrl.columnName, detailContenUrl);
+                        value.put(DailyNewsDao.Properties.UpdateDate.columnName,
+                                getPublishDate(bean.getPublished_date()).getTime());
                         values.add(value);
 
                         Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(syncTopic).build();
-                        getContext().getContentResolver().delete(uri, "TOPIC = ?", new String[]{syncTopic});
+
+                        getContext().getContentResolver().delete(
+                                uri,
+                                DailyNewsDao.Properties.Topic.columnName + " = ?",
+                                new String[]{syncTopic});
+
                         getContext().getContentResolver().bulkInsert(
                                 uri,
                                 values.toArray(new ContentValues[values.size()]));

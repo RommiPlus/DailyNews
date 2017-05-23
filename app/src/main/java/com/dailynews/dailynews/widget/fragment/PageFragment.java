@@ -28,6 +28,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.dailynews.dailynews.EndlessRecyclerViewScrollListener;
 import com.dailynews.dailynews.LoadNewsAdapter;
 import com.dailynews.dailynews.R;
+import com.dailynews.dailynews.data.db.DailyNewsDao;
 import com.dailynews.dailynews.data.provider.NewsContentProvider;
 import com.dailynews.dailynews.sync.DailyNewsSyncAdapter;
 import com.dailynews.dailynews.widget.NewsApplication;
@@ -176,7 +177,9 @@ public class PageFragment extends Fragment implements
         Log.i(TAG, "id: " + id);
         Uri uri = NewsContentProvider.NEWS_URI.buildUpon().appendPath(mTopic).build();
         return new CursorLoader(getActivity(), uri, null,
-                "TOPIC = ?", new String[]{mTopic}, "UPDATE_DATE DESC");
+                DailyNewsDao.Properties.Topic.columnName + " = ?",
+                new String[]{mTopic},
+                DailyNewsDao.Properties.UpdateDate.columnName + " DESC");
     }
 
     @Override

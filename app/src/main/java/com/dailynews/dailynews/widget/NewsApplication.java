@@ -66,7 +66,7 @@ public class NewsApplication extends Application {
         Database db = helper.getWritableDb();
         mDaossesion = new DaoMaster(db).newSession();
 
-        mSpUtils = new SPUtils("network_status");
+        mSpUtils = new SPUtils(NETWORK_STATUS);
     }
 
     public SPUtils getSpUtils() {

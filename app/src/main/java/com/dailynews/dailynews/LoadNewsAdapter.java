@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.dailynews.dailynews.data.db.DailyNewsDao;
 import com.dailynews.dailynews.widget.DetailActivity;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.picasso.Picasso;
@@ -79,9 +80,9 @@ public class LoadNewsAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof NewsViewHolder) {
             mCursor.moveToPosition(position);
-            String title = mCursor.getString(mCursor.getColumnIndex("TITLE"));
-            String imageUrl = mCursor.getString(mCursor.getColumnIndex("IMAGE_URL"));
-            final String contentUrl = mCursor.getString(mCursor.getColumnIndex("COTENT_URL"));
+            String title = mCursor.getString(mCursor.getColumnIndex(DailyNewsDao.Properties.Title.columnName));
+            String imageUrl = mCursor.getString(mCursor.getColumnIndex(DailyNewsDao.Properties.ImageUrl.columnName));
+            final String contentUrl = mCursor.getString(mCursor.getColumnIndex(DailyNewsDao.Properties.CotentUrl.columnName));
 
             final NewsViewHolder newsViewHolder = (NewsViewHolder) holder;
             newsViewHolder.mTitle.setText(title);
