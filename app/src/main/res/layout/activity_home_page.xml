@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Daily News"
+                android:text="@string/title"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline" />
         </android.support.v7.widget.Toolbar>
 

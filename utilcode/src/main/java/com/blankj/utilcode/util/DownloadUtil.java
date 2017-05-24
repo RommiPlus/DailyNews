@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
+import com.blankj.utilcode.R;
+
 /**
  * Created by WuXiaolong
  * on 2016/5/4.
@@ -105,11 +107,11 @@ public class DownloadUtil {
                             if (filePath.endsWith("apk")) {
                                 AppUtils.installApp(context, filePath.trim().substring(7));
                             } else {
-                                Toast.makeText(context, "下载完成", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, context.getString(R.string.download_finished), Toast.LENGTH_SHORT).show();
                             }
                         }
                     } else {
-                        Toast.makeText(context, "网络不给力", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.network_not_connected), Toast.LENGTH_SHORT).show();
                     }
                 }
             }

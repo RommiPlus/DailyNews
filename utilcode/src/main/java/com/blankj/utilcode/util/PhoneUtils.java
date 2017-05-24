@@ -383,6 +383,8 @@ public final class PhoneUtils {
             xmlSerializer.endDocument();
             // 2.8将数据刷新到文件中
             xmlSerializer.flush();
+
+            cursor.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

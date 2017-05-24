@@ -3,7 +3,6 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="reach_last_item">Reached the last row.</string>
     <string name="daily">Daily</string>
@@ -20,4 +19,5 @@
     <string name="loading_info">Data is loading</string>
     <string name="loading_image">This is a image</string>
     <string name="app_icon">This is a app icon</string>
+    <string name="title">Daily News</string>
 </resources>

@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.dailynews.dailynews.EndlessRecyclerViewScrollListener;
@@ -86,10 +85,6 @@ public class PageFragment extends Fragment implements
         super.onResume();
 
         getSp().setListener(this);
-
-        if (!NetworkUtils.isConnected()) {
-            getSp().put(NewsApplication.NETWORK_STATUS,NewsApplication.NETWORK_NOT_CONNECTED);
-        }
 
     }
 
